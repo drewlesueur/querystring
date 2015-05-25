@@ -86,9 +86,25 @@ func valueify2(val reflect.Value, values url.Values, scope string) error {
 				return err
 			}
 		}
-	case reflect.Slice:
-	case reflect.Array:
-	case reflect.Ptr:
+	case reflect.Slice, reflect.Array:
+		for i := 0; i < val.Len(); i++ {
+			sliceValue := val.Index(i)
+			// should I let the above handle this?
+			if sliceValue.Kind() == reflect.Interface { // or pointer?!
+				sliceValue = sliceValue.Elem()
+			}
+			indexStr := strconv.Itoa(i)
+			var err error
+			if scope == "" {
+				err = valueify2(sliceValue, values, indexStr)
+			} else {
+				err = valueify2(sliceValue, values, scope+"["+indexStr+"]")
+			}
+			if err != nil {
+				return err
+			}
+		}
+	//case reflect.Ptr: // done at beginning
 	default:
 		fmt.Println("got a type we can't handle")
 		return errors.New("can not handle this type")
