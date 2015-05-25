@@ -2,7 +2,6 @@ package querystring
 
 import (
 	"errors"
-	"fmt"
 	"net/url"
 	"reflect"
 	"sort"
@@ -10,7 +9,7 @@ import (
 )
 
 // the go-querystring project isn't what I wanted.
-// I started applying a patch, and might do that later.
+// I started working on a fork, and might do that later.
 
 func Valueify(v interface{}) (url.Values, error) {
 	values := make(url.Values)
@@ -21,7 +20,6 @@ func Valueify(v interface{}) (url.Values, error) {
 }
 
 func valueify2(val reflect.Value, values url.Values, scope string) error {
-
 	for val.Kind() == reflect.Ptr {
 		if val.IsNil() {
 			return nil
@@ -29,7 +27,6 @@ func valueify2(val reflect.Value, values url.Values, scope string) error {
 		val = val.Elem()
 	}
 
-	fmt.Println("the kind: ", val.Kind())
 	switch val.Kind() {
 	case reflect.Bool:
 		if val.Bool() {
@@ -48,7 +45,7 @@ func valueify2(val reflect.Value, values url.Values, scope string) error {
 	case reflect.String:
 		values.Add(scope, val.String())
 	case reflect.Interface:
-		fmt.Println("got here!!!??")
+		//fmt.Println("got here!!!??")
 	case reflect.Struct:
 		// TODO: handle struct
 		// see go-querystring for a nice loop example
@@ -74,8 +71,6 @@ func valueify2(val reflect.Value, values url.Values, scope string) error {
 				mapValue = mapValue.Elem()
 			}
 
-			fmt.Println("yo!", mapValue)
-			fmt.Println("yo!", mapValue.Kind() == reflect.String)
 			var err error
 			if scope == "" {
 				err = valueify2(mapValue, values, mapKey)
@@ -106,9 +101,7 @@ func valueify2(val reflect.Value, values url.Values, scope string) error {
 		}
 	//case reflect.Ptr: // done at beginning
 	default:
-		fmt.Println("got a type we can't handle")
 		return errors.New("can not handle this type")
-
 	}
 	return nil
 }
