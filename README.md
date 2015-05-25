@@ -8,3 +8,4 @@ This supports maps, slices, and arrays, but doesn't support structs yet (pull re
 I started to work on a fork of go-querystring but decided to write my own as a learning experience and because I thought it would be easier.
 It might be nice to one day merge this into go-querystring once it's more fully baked.
 
+See the tests for example usage.
