@@ -101,7 +101,9 @@ func valueify2(val reflect.Value, values url.Values, scope string) error {
 		}
 	//case reflect.Ptr: // done at beginning
 	default:
-		return errors.New("can not handle this type")
+		// basically if this is null
+		//fmt.Println(val.Kind(), "============== unhandled type =======(", scope, ")")
+		//return errors.New("can not handle this type")
 	}
 	return nil
 }
